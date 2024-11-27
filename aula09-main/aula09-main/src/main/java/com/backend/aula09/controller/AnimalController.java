@@ -4,6 +4,14 @@ import com.backend.aula09.dto.AnimalDTO;
 import com.backend.aula09.model.Animal;
 import com.backend.aula09.service.AnimalService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,14 +25,20 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequestMapping("/animals")
+@Tag(name = "Animal", description = "Endpoints para gerenciar animais")
 public class AnimalController {
 
     @Autowired
     private AnimalService animalService;
 
-    // POST - Criar um novo animal
+    @Operation(summary = "Cadastrar um novo animal", description = "Adiciona um novo animal ao sistema.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Animal cadastrado com sucesso",
+                    content = @Content(schema = @Schema(implementation = Animal.class))),
+            @ApiResponse(responseCode = "500", description = "Erro ao cadastrar o animal")
+    })
     @PostMapping("/register")
-    public ResponseEntity<Object> createAnimal(@RequestBody AnimalDTO animalDTO) {
+    public ResponseEntity<Object> createAnimal(@RequestBody(description = "Detalhes do animal a ser cadastrado.") AnimalDTO animalDTO) {
         log.info("Recebida requisição para criar um novo animal.");
         try {
             Animal savedAnimal = animalService.createAnimal(animalDTO);
@@ -34,7 +48,12 @@ public class AnimalController {
         }
     }
 
-    // GET - Listar todos os animais cadastrados
+    @Operation(summary = "Listar todos os animais", description = "Retorna todos os animais cadastrados no sistema.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de animais retornada com sucesso",
+                    content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Erro ao listar os animais")
+    })
     @GetMapping
     public ResponseEntity<Object> getAllAnimals() {
         log.info("Recebida requisição para listar todos os animais.");
@@ -45,7 +64,12 @@ public class AnimalController {
         }
     }
 
-    // GET - Listar apenas os animais disponíveis (available = true)
+    @Operation(summary = "Listar animais disponíveis", description = "Retorna apenas os animais que estão disponíveis para adoção.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de animais disponíveis retornada com sucesso",
+                    content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Erro ao listar os animais disponíveis")
+    })
     @GetMapping("/available")
     public ResponseEntity<Object> getAvailableAnimals() {
         log.info("Recebida requisição para listar todos os animais disponíveis.");
@@ -56,9 +80,15 @@ public class AnimalController {
         }
     }
 
-    // PUT - Atualizar os dados de um animal pelo ID
+    @Operation(summary = "Atualizar animal", description = "Atualiza os detalhes de um animal existente com base no ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Animal atualizado com sucesso",
+                    content = @Content(schema = @Schema(implementation = Animal.class))),
+            @ApiResponse(responseCode = "404", description = "Animal não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro ao atualizar o animal")
+    })
     @PutMapping("/up/{id}")
-    public ResponseEntity<Object> updateAnimal(@PathVariable UUID id, @RequestBody AnimalDTO animalDTO) {
+    public ResponseEntity<Object> updateAnimal(@PathVariable UUID id, @RequestBody(description = "Novos dados do animal.") AnimalDTO animalDTO) {
         try {
             Optional<Animal> updatedAnimal = animalService.updateAnimal(id, animalDTO);
             return updatedAnimal.isPresent()
@@ -69,7 +99,12 @@ public class AnimalController {
         }
     }
 
-    // PATCH - Alterar o campo `available`
+    @Operation(summary = "Atualizar disponibilidade do animal", description = "Altera o status de disponibilidade do animal (disponível/indisponível).")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Disponibilidade atualizada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Animal não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro ao atualizar a disponibilidade")
+    })
     @PatchMapping("/{id}/available")
     public ResponseEntity<Object> updateAvailability(@PathVariable UUID id, @RequestParam boolean available) {
         try {
@@ -82,9 +117,14 @@ public class AnimalController {
         }
     }
 
-    // PATCH - Atualizar localização do animal
+    @Operation(summary = "Atualizar localização do animal", description = "Atualiza a localização de um animal existente com base no ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Localização atualizada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Animal não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro ao atualizar a localização")
+    })
     @PatchMapping("/{id}/location")
-    public ResponseEntity<Object> updateAnimalLocation(@PathVariable UUID id, @RequestBody AnimalDTO animalDTO) {
+    public ResponseEntity<Object> updateAnimalLocation(@PathVariable UUID id, @RequestBody(description = "Novos dados de localização.") AnimalDTO animalDTO) {
         try {
             Optional<Animal> updatedAnimal = animalService.updateAnimalLocation(id, animalDTO);
             return updatedAnimal.isPresent()
@@ -95,4 +135,3 @@ public class AnimalController {
         }
     }
 }
-

@@ -74,6 +74,8 @@ public class AdoptionService {
                     userOptional.get().getEmail(),
                     savedAdoption.getAdoptionDate()
             );
+        } catch (IllegalArgumentException e) {
+            throw e; // Re-lança a exceção esperada
         } catch (Exception e) {
             throw new RuntimeException("Erro ao registrar adoção: " + e.getMessage());
         }
@@ -140,9 +142,10 @@ public class AdoptionService {
 
             // Remove o registro de adoção
             adoptionRepository.delete(adoption);
+        } catch (IllegalArgumentException e) {
+            throw e; // Re-lança a exceção esperada
         } catch (Exception e) {
             throw new RuntimeException("Erro ao cancelar a adoção: " + e.getMessage());
         }
     }
 }
-
