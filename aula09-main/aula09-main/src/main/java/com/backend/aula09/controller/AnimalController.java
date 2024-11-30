@@ -7,7 +7,6 @@ import com.backend.aula09.service.AnimalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,7 +37,7 @@ public class AnimalController {
             @ApiResponse(responseCode = "500", description = "Erro ao cadastrar o animal")
     })
     @PostMapping("/register")
-    public ResponseEntity<Object> createAnimal(@RequestBody(description = "Detalhes do animal a ser cadastrado.") AnimalDTO animalDTO) {
+    public ResponseEntity<Object> createAnimal(@RequestBody AnimalDTO animalDTO) {
         log.info("Recebida requisição para criar um novo animal.");
         try {
             Animal savedAnimal = animalService.createAnimal(animalDTO);
@@ -88,7 +87,7 @@ public class AnimalController {
             @ApiResponse(responseCode = "500", description = "Erro ao atualizar o animal")
     })
     @PutMapping("/up/{id}")
-    public ResponseEntity<Object> updateAnimal(@PathVariable UUID id, @RequestBody(description = "Novos dados do animal.") AnimalDTO animalDTO) {
+    public ResponseEntity<Object> updateAnimal(@PathVariable UUID id, @RequestBody AnimalDTO animalDTO) {
         try {
             Optional<Animal> updatedAnimal = animalService.updateAnimal(id, animalDTO);
             return updatedAnimal.isPresent()
@@ -124,7 +123,7 @@ public class AnimalController {
             @ApiResponse(responseCode = "500", description = "Erro ao atualizar a localização")
     })
     @PatchMapping("/{id}/location")
-    public ResponseEntity<Object> updateAnimalLocation(@PathVariable UUID id, @RequestBody(description = "Novos dados de localização.") AnimalDTO animalDTO) {
+    public ResponseEntity<Object> updateAnimalLocation(@PathVariable UUID id, @RequestBody AnimalDTO animalDTO) {
         try {
             Optional<Animal> updatedAnimal = animalService.updateAnimalLocation(id, animalDTO);
             return updatedAnimal.isPresent()
