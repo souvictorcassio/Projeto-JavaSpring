@@ -6,5 +6,5 @@
 - Joana Elena Cardoso Santos,
 - Kathyllin de Oliveira Bandeira,
 - Liliana Barbosa,
-- Vitória Alice Moraes de Assunção,
-- Victor Cássio de Sousa.
+- Victor Cássio de Sousa,
+- Vitória Alice Moraes de Assunção.
